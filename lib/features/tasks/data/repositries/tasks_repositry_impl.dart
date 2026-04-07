@@ -32,6 +32,10 @@ class TasksRepositoryImpl implements TasksRepository {
   }
 
   @override
+  Future<void> deleteTask(int id) async {
+    await remoteDataSource.deleteTask(id);
+  }
+
   Future<Either<Failure, void>> createTask({
     required CreateTaskParams params,
   }) async {

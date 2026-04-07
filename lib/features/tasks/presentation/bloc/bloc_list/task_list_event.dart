@@ -17,3 +17,9 @@ class ChangeStatusFilter extends TaskListEvent {
 
   ChangeStatusFilter(this.statusId);
 }
+
+class DeleteTaskEvent extends TaskListEvent {
+  final int taskId;
+
+  DeleteTaskEvent(this.taskId);
+}

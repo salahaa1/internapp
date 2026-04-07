@@ -12,12 +12,28 @@ abstract class TasksRemoteDataSource {
   });
 
   Future<void> createTask({required CreateTaskParams params});
+  Future<void> deleteTask(int id);
 }
 
 class TasksRemoteDataSourceImpl implements TasksRemoteDataSource {
   final Dio dio;
 
   TasksRemoteDataSourceImpl({required this.dio});
+
+  @override
+  Future<void> deleteTask(int id) async {
+    final url = '${ApiConstants.task}/$id';
+
+    print('🔥 DELETE TASK ID: $id');
+    print('🔥 BASE URL: ${dio.options.baseUrl}');
+    print('🔥 DELETE URL: $url');
+    print('🔥 FULL URL: ${dio.options.baseUrl}$url');
+
+    final response = await dio.delete(url);
+
+    print('🔥 DELETE STATUS: ${response.statusCode}');
+    print('🔥 DELETE RESPONSE: ${response.data}');
+  }
 
   @override
   Future<PaginatedTasksModel> getTasks({
@@ -33,6 +49,7 @@ class TasksRemoteDataSourceImpl implements TasksRemoteDataSource {
         'include_completed': includeCompleted ? 1 : 0,
       },
     );
+
     print('🔥 GET TASKS RESPONSE: ${response.data}');
 
     return PaginatedTasksModel.fromJson(response.data);
@@ -56,6 +73,7 @@ class TasksRemoteDataSourceImpl implements TasksRemoteDataSource {
         'recurrence_type': params.recurrenceType,
       },
     );
+
     print('🔥 CREATE TASK RESPONSE: ${response.data}');
   }
 }

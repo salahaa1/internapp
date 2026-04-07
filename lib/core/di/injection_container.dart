@@ -55,6 +55,9 @@ Future<void> init() async {
   sl.registerFactory(() => ResendVerificationBloc(sl()));
   sl.registerFactory(() => LoginBloc(sl(), sl()));
   sl.registerFactory(() => DeleteAccountBloc(sl()));
+
+  sl.registerLazySingleton(() => CreateTaskUseCase(sl()));
+  sl.registerFactory(() => CreateTaskBloc(sl()));
   sl.registerLazySingleton<TasksRemoteDataSource>(
     () => TasksRemoteDataSourceImpl(dio: sl()),
   );
@@ -63,9 +66,7 @@ Future<void> init() async {
     () => TasksRepositoryImpl(remoteDataSource: sl()),
   );
 
-  sl.registerLazySingleton(() => GetTasksUseCase(sl()));
+  sl.registerLazySingleton<GetTasksUseCase>(() => GetTasksUseCase(sl()));
 
-  sl.registerFactory(() => TaskListBloc(sl()));
-  sl.registerLazySingleton(() => CreateTaskUseCase(sl()));
-  sl.registerFactory(() => CreateTaskBloc(sl()));
+  sl.registerFactory<TaskListBloc>(() => TaskListBloc(sl(), sl()));
 }

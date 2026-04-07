@@ -10,4 +10,5 @@ abstract class TasksRepository {
     required bool includeCompleted,
   });
   Future<Either<Failure, void>> createTask({required CreateTaskParams params});
+  Future<void> deleteTask(int id);
 }

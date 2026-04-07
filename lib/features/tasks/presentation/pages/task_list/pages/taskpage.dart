@@ -9,6 +9,7 @@ import 'package:tasks_project/features/tasks/presentation/bloc/bloc_list/task_li
 import 'package:tasks_project/features/tasks/presentation/bloc/bloc_list/task_list_state.dart';
 import 'package:tasks_project/features/tasks/presentation/bloc/post_task/create_task_bloc.dart';
 import 'package:tasks_project/features/tasks/presentation/pages/creat_task/add_task.dart';
+import 'package:tasks_project/features/tasks/presentation/pages/ditails/task_details_page.dart';
 import 'package:tasks_project/features/tasks/presentation/pages/task_list/widgets/list_card.dart';
 import 'package:tasks_project/features/tasks/presentation/pages/task_list/widgets/task_appbar.dart';
 import 'package:tasks_project/features/tasks/presentation/pages/task_list/widgets/task_header.dart';
@@ -192,7 +193,15 @@ class _TasksViewState extends State<TasksView> {
                         child: TaskOverviewCard(
                           task: task,
                           onTap: () {
-                            // افتح صفحة التفاصيل هنا لاحقًا
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => BlocProvider.value(
+                                  value: context.read<TaskListBloc>(),
+                                  child: TaskDetailsPage(task: task),
+                                ),
+                              ),
+                            );
                           },
                         ),
                       ),

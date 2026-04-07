@@ -1,5 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tasks_project/features/tasks/domin/intities/task.dart';
+import 'package:tasks_project/features/tasks/domin/repositries/tasks_repository.dart';
 import 'package:tasks_project/features/tasks/domin/usecase/get_tasks_usecase.dart';
 
 import 'task_list_event.dart';
@@ -7,10 +8,13 @@ import 'task_list_state.dart';
 
 class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
   final GetTasksUseCase getTasksUseCase;
+  final TasksRepository repository;
 
-  static const int _perPage = 10;
+  static const int _perPage = 50;
 
-  TaskListBloc(this.getTasksUseCase) : super(TaskListLoading()) {
+  TaskListBloc(this.getTasksUseCase, this.repository)
+    : super(TaskListLoading()) {
+    on<DeleteTaskEvent>(_onDeleteTask);
     on<FetchTasks>(_onFetchTasks);
     on<FetchNextPage>(_onFetchNextPage);
     on<RefreshTasks>(_onRefreshTasks);
@@ -178,5 +182,28 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
         selectedStatusId: event.statusId,
       ),
     );
+  }
+
+  Future<void> _onDeleteTask(
+    DeleteTaskEvent event,
+    Emitter<TaskListState> emit,
+  ) async {
+    try {
+      print('🔥 DELETE EVENT ID: ${event.taskId}');
+
+      await repository.deleteTask(event.taskId);
+
+      final currentState = state;
+
+      if (currentState is TaskListLoaded) {
+        final updatedTasks = currentState.tasks
+            .where((t) => t.id != event.taskId)
+            .toList();
+
+        emit(currentState.copyWith(tasks: updatedTasks));
+      }
+    } catch (e) {
+      print('❌ DELETE ERROR: $e');
+    }
   }
 }
